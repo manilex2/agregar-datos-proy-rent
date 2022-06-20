@@ -1,0 +1,40 @@
+service: agregar-datos-proy-rent
+useDotenv: true
+
+provider:
+  name: aws
+  runtime: nodejs16.x
+  region: us-east-2
+  environment:
+    DB_HOST: ${env:DB_HOST}
+    DB_USER: ${env:DB_USER}
+    DB_PASSWORD: ${env:DB_PASSWORD}
+    DB_PORT: ${env:DB_PORT}
+    DB_DATABASE: ${env:DB_DATABASE}
+    SPREADSHEET_ID: ${env:SPREADSHEET_ID}
+    ID_HOJA_PROY_LP: ${env:ID_HOJA_PROY_LP}
+    ID_HOJA_PROY_CP: ${env:ID_HOJA_PROY_CP}
+    ID_HOJA_RENT_LP: ${env:ID_HOJA_RENT_LP}
+    ID_HOJA_RENT_CP: ${env:ID_HOJA_RENT_CP}
+    ID_HOJA_PROY_LP_NOLINEAL: ${env:ID_HOJA_PROY_LP_NOLINEAL}
+    ID_HOJA_PROY_CP_NOLINEAL: ${env:ID_HOJA_PROY_CP_NOLINEAL}
+    TABLE_CRIPTO_PROY_LP: ${env:TABLE_CRIPTO_PROY_LP}
+    TABLE_CRIPTO_PROY_CP: ${env:TABLE_CRIPTO_PROY_CP}
+    TABLE_CRIPTO_RENT_LP: ${env:TABLE_CRIPTO_RENT_LP}
+    TABLE_CRIPTO_RENT_CP: ${env:TABLE_CRIPTO_RENT_CP}
+    TABLE_CRIPTO_PROY_LP_NOLINEAL: ${env:TABLE_CRIPTO_PROY_LP_NOLINEAL}
+    TABLE_CRIPTO_PROY_CP_NOLINEAL: ${env:TABLE_CRIPTO_PROY_CP_NOLINEAL}
+    TABLE_PRECIO_ACTUAL: ${env:TABLE_PRECIO_ACTUAL}
+    
+
+functions:
+  agregarDatos:
+    handler: index.handler
+    memorySize: 1024
+    name: agregar-datos-proy-rent
+    description: LCF20 - Guarda los las Proyecciones y Rentabilidades desde Google Spreadsheet a la base de Datos.
+    timeout: 720
+    maximumRetryAttempts: 0
+    events:
+      - eventBridge:
+          schedule: cron(5 5/4 ? * * *)

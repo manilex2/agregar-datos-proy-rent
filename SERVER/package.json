@@ -1,0 +1,21 @@
+{
+    "name": "agregar-proyecciones-rentabilidades",
+    "version": "1.0.0",
+    "description": "Funcion que agrega las proyecciones a largo, corto plazo lineales y no lineales y las rentabilidades a largo y corto plazo",
+    "keywords": [],
+    "author": "Manuel Pereira",
+    "license": "ISC",
+    "scripts": {
+        "dev": "nodemon index.js"
+    },
+    "dependencies": {
+        "dotenv": "^10.0.0",
+        "express": "^4.17.1",
+        "googleapis": "^91.0.0",
+        "mysql2": "^2.3.0"
+    },
+    "devDependencies": {
+        "morgan": "^1.10.0",
+        "nodemon": "^2.0.15"
+    }
+}
