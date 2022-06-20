@@ -33,7 +33,7 @@ functions:
     memorySize: 1024
     name: agregar-datos-proy-rent
     description: LCF20 - Guarda los las Proyecciones y Rentabilidades desde Google Spreadsheet a la base de Datos.
-    timeout: 720
+    timeout: 900
     maximumRetryAttempts: 0
     events:
       - eventBridge:
