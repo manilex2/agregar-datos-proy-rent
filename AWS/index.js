@@ -147,7 +147,6 @@ exports.handler = async function (event) {
                 newProyeccionLP.push(proyeccioneslp);
                 if (i == recogerProyeccionesLP.length-1) {
                     [rows2, fields2] = await conexion.execute(sql);
-                    console.log(rows2.length);
                 }
             }
             for (let i = 0; i < recogerProyeccionesCP.length; i++) {
@@ -216,18 +215,17 @@ exports.handler = async function (event) {
                 newProyeccionCP.push(proyeccionescp);
                 if (i == recogerProyeccionesCP.length-1) {
                     [rows3, fields3] = await conexion.execute(sql);
-                    console.log(rows3.length);
                 }
             }
-            for (let k = 0; k < recogerRentabilidadesLP.length; k++) {
-                var secuencial = parseInt(recogerRentabilidadesLP[k][0]);
-                var escenario = recogerRentabilidadesLP[k][1].toString();
-                var cripto = recogerRentabilidadesLP[k][2].toString();
-                var d30 = parseFloat(recogerRentabilidadesLP[k][3]).toFixed(9);
-                var m3 = parseFloat(recogerRentabilidadesLP[k][4]).toFixed(9);
-                var m6 = parseFloat(recogerRentabilidadesLP[k][5]).toFixed(9);
-                var a1 = parseFloat(recogerRentabilidadesLP[k][6]).toFixed(9);
-                var idGrupo = parseInt(recogerRentabilidadesLP[k][7]);
+            for (let i = 0; i < recogerRentabilidadesLP.length; i++) {
+                var secuencial = recogerRentabilidadesLP[i][0];
+                var escenario = recogerRentabilidadesLP[i][1];
+                var cripto = recogerRentabilidadesLP[i][2];
+                var d30 = recogerRentabilidadesLP[i][3];
+                var m3 = recogerRentabilidadesLP[i][4];
+                var m6 = recogerRentabilidadesLP[i][5];
+                var a1 = recogerRentabilidadesLP[i][6];
+                var idGrupo = recogerRentabilidadesLP[i][7];
                 let newRentabilidadLP = new RentabilidadLP(
                     secuencial,
                     escenario,
@@ -240,14 +238,14 @@ exports.handler = async function (event) {
                 );
                 newRentabilidadLP.push(rentabilidadeslp);
             }
-            for (let l = 0; l < recogerRentabilidadesCP.length; l++) {
-                var secuencial = parseInt(recogerRentabilidadesLP[l][0]);
-                var escenario = recogerRentabilidadesLP[l][1].toString();
-                var cripto = recogerRentabilidadesLP[l][2].toString();
-                var d15 = parseFloat(recogerRentabilidadesLP[l][3]).toFixed(9);
-                var d30 = parseFloat(recogerRentabilidadesLP[l][4]).toFixed(9);
-                var d45 = parseFloat(recogerRentabilidadesLP[l][5]).toFixed(9);
-                var idGrupo = parseInt(recogerRentabilidadesLP[l][6]);
+            for (let i = 0; i < recogerRentabilidadesCP.length; i++) {
+                var secuencial = recogerRentabilidadesCP[i][0];
+                var escenario = recogerRentabilidadesCP[i][1];
+                var cripto = recogerRentabilidadesCP[i][2];
+                var d15 = recogerRentabilidadesCP[i][3];
+                var d30 = recogerRentabilidadesCP[i][4];
+                var d45 = recogerRentabilidadesCP[i][5];
+                var idGrupo = recogerRentabilidadesCP[i][6];
                 let newRentabilidadCP = new RentabilidadCP(
                     secuencial,
                     escenario,
@@ -325,7 +323,6 @@ exports.handler = async function (event) {
                 newProyeccionLPNoLineal.push(proyeccioneslpnolineales);
                 if (i == recogerProyeccionesLPNoLineal.length-1) {
                     [rows4, fields4] = await conexion.execute(sql);
-                    console.log(rows4.length);
                 }
             }
             for (let i = 0; i < recogerProyeccionesCPNoLineal.length; i++) {
@@ -405,14 +402,19 @@ exports.handler = async function (event) {
         }
     
         async function agregarDatos(datos, table) {
-            let sql1 = `DELETE FROM ${table} WHERE id_grupo=${datos[0].id_grupo}`;
-            let sql2 = `ALTER TABLE ${table} AUTO_INCREMENT=1`;
-            await conexion.execute(sql1);
-            await conexion.execute(sql2);
+            console.log(datos);
             if (!datos || datos[0][0]==="#N/A") {
                 console.log("No se encontraron datos.");
                 return;
             } else {
+                let sql1 = `DELETE FROM ${table} WHERE id_grupo=${datos[0].id_grupo}`;
+                let sql2 = `ALTER TABLE ${table} AUTO_INCREMENT=1`;
+                conn.query(sql1, function (err, result) {
+                    if (err) throw err;
+                });
+                conn.query(sql2, function (err, result) {
+                    if (err) throw err;
+                });
                 let sql3 = `INSERT INTO ${table} SET ?`;
                 for (let i = 0; i < datos.length; i++) {
                     const element = datos[i];
