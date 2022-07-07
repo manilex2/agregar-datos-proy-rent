@@ -32,7 +32,7 @@ functions:
     handler: index.handler
     memorySize: 1024
     name: agregar-datos-proy-rent
-    description: LCF20 - Guarda los las Proyecciones y Rentabilidades desde Google Spreadsheet a la base de Datos.
+    description: LCF12 - Guarda los las Proyecciones y Rentabilidades desde Google Spreadsheet a la base de Datos.
     timeout: 900
     maximumRetryAttempts: 0
     events:
