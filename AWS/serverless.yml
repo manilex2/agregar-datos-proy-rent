@@ -12,29 +12,76 @@ provider:
     DB_PORT: ${env:DB_PORT}
     DB_DATABASE: ${env:DB_DATABASE}
     SPREADSHEET_ID: ${env:SPREADSHEET_ID}
-    ID_HOJA_PROY_LP: ${env:ID_HOJA_PROY_LP}
-    ID_HOJA_PROY_CP: ${env:ID_HOJA_PROY_CP}
-    ID_HOJA_RENT_LP: ${env:ID_HOJA_RENT_LP}
-    ID_HOJA_RENT_CP: ${env:ID_HOJA_RENT_CP}
-    ID_HOJA_PROY_LP_NOLINEAL: ${env:ID_HOJA_PROY_LP_NOLINEAL}
-    ID_HOJA_PROY_CP_NOLINEAL: ${env:ID_HOJA_PROY_CP_NOLINEAL}
-    TABLE_CRIPTO_PROY_LP: ${env:TABLE_CRIPTO_PROY_LP}
-    TABLE_CRIPTO_PROY_CP: ${env:TABLE_CRIPTO_PROY_CP}
-    TABLE_CRIPTO_RENT_LP: ${env:TABLE_CRIPTO_RENT_LP}
-    TABLE_CRIPTO_RENT_CP: ${env:TABLE_CRIPTO_RENT_CP}
-    TABLE_CRIPTO_PROY_LP_NOLINEAL: ${env:TABLE_CRIPTO_PROY_LP_NOLINEAL}
-    TABLE_CRIPTO_PROY_CP_NOLINEAL: ${env:TABLE_CRIPTO_PROY_CP_NOLINEAL}
-    TABLE_PRECIO_ACTUAL: ${env:TABLE_PRECIO_ACTUAL}
     
-
 functions:
-  agregarDatos:
+  agregarRentabilidadesLPCP:
+    handler: rentabilidades.handler
+    memorySize: 1024
+    name: agregar-datos-rent
+    description: LCF12 - Guarda las Rentabilidades a Largo y Corto Plazo desde Google Spreadsheet a la base de Datos.
+    timeout: 300
+    maximumRetryAttempts: 0
+    environment:
+      ID_HOJA_RENT_LP: ${env:ID_HOJA_RENT_LP}
+      ID_HOJA_RENT_CP: ${env:ID_HOJA_RENT_CP}
+      TABLE_CRIPTO_RENT_LP: ${env:TABLE_CRIPTO_RENT_LP}
+      TABLE_CRIPTO_RENT_CP: ${env:TABLE_CRIPTO_RENT_CP}
+    events:
+      - eventBridge:
+          schedule: cron(5 5/4 ? * * *)
+  agregarProyLP:
     handler: index.handler
     memorySize: 1024
-    name: agregar-datos-proy-rent
-    description: LCF12 - Guarda los las Proyecciones y Rentabilidades desde Google Spreadsheet a la base de Datos.
-    timeout: 900
+    name: agregar-proy-lp
+    description: LCF17 - Guarda las Proyecciones a Largo Plazo desde Google Spreadsheet a la base de Datos.
+    timeout: 300
     maximumRetryAttempts: 0
+    environment:
+      ID_HOJA_PROY: ${env:ID_HOJA_PROY_LP}
+      TABLE_CRIPTO_PROY: ${env:TABLE_CRIPTO_PROY_LP}
+      TABLE_PRECIO_ACTUAL: ${env:TABLE_PRECIO_ACTUAL}
+    events:
+      - eventBridge:
+          schedule: cron(5 5/4 ? * * *)
+  agregarProyCP:
+    handler: index.handler
+    memorySize: 1024
+    name: agregar-proy-cp
+    description: LCF18 - Guarda las Proyecciones a Corto Plazo desde Google Spreadsheet a la base de Datos.
+    timeout: 300
+    maximumRetryAttempts: 0
+    environment:
+      ID_HOJA_PROY: ${env:ID_HOJA_PROY_CP}
+      TABLE_CRIPTO_PROY: ${env:TABLE_CRIPTO_PROY_CP}
+      TABLE_PRECIO_ACTUAL: ${env:TABLE_PRECIO_ACTUAL}
+    events:
+      - eventBridge:
+          schedule: cron(5 5/4 ? * * *)
+  agregarProyCPNoLineal:
+    handler: index.handler
+    memorySize: 1024
+    name: agregar-proy-cp-nolineal
+    description: LCF19 - Guarda las Proyecciones a Corto Plazo No Lineales desde Google Spreadsheet a la base de Datos.
+    timeout: 300
+    maximumRetryAttempts: 0
+    environment:
+      ID_HOJA_PROY: ${env:HOJA_PROY_CP_NOLINEAL}
+      TABLE_CRIPTO_PROY: ${env:TABLE_CRIPTO_PROY_CP_NOLINEAL}
+      TABLE_PRECIO_ACTUAL: ${env:TABLE_PRECIO_ACTUAL}
+    events:
+      - eventBridge:
+          schedule: cron(5 5/4 ? * * *)
+  agregarProyLPNoLineal:
+    handler: index.handler
+    memorySize: 1024
+    name: agregar-proy-lp-nolineal
+    description: LCF20 - Guarda las Proyecciones a Largo Plazo No Lineales desde Google Spreadsheet a la base de Datos.
+    timeout: 300
+    maximumRetryAttempts: 0
+    environment:
+      ID_HOJA_PROY: ${env:HOJA_PROY_LP_NOLINEAL}
+      TABLE_CRIPTO_PROY: ${env:TABLE_CRIPTO_PROY_LP_NOLINEAL}
+      TABLE_PRECIO_ACTUAL: ${env:TABLE_PRECIO_ACTUAL}
     events:
       - eventBridge:
           schedule: cron(5 5/4 ? * * *)

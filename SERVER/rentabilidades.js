@@ -4,7 +4,8 @@ const morgan = require('morgan');
 const app = express();
 const mysql = require('mysql2/promise');
 const mysql2 = require('mysql2');
-const Proyeccion = require("./proyeccionModel");
+const RentabilidadCP = require("./rentabilidadcpModel");
+const RentabilidadLP = require("./rentabilidadlpModel");
 const { database } = require('./keys');
 const {google} = require('googleapis');
 const auth = new google.auth.GoogleAuth({
@@ -34,56 +35,65 @@ app.get('/', async function (solicitud, respuesta) {
     const client = await auth.getClient();
     const googleSheet = google.sheets({ version: 'v4', auth: client });
     try {
-        const proyecciones = [];
-        var requestProyecciones = (await googleSheet.spreadsheets.values.get({
+        const rentabilidadescp = [];
+        const rentabilidadeslp = [];
+        var requestRentabilidadesCP = (await googleSheet.spreadsheets.values.get({
             auth,
             spreadsheetId,
-            range: `${process.env.ID_HOJA_PROY}`
+            range: `${process.env.ID_HOJA_RENT_CP}`
         })).data;
-        var recogerProyecciones = requestProyecciones.values;
-        var sql = `SELECT * FROM ${process.env.TABLE_PRECIO_ACTUAL}`;
-        const [rows, fields] = await conexion.execute(sql);
+        var requestRentabilidadesLP = (await googleSheet.spreadsheets.values.get({
+            auth,
+            spreadsheetId,
+            range: `${process.env.ID_HOJA_RENT_LP}`
+        })).data;
+        var recogerRentabilidadesLP = requestRentabilidadesLP.values;
+        var recogerRentabilidadesCP = requestRentabilidadesCP.values;
 
-        for (let i = 0; i < recogerProyecciones.length; i++) {
-            var cripto = recogerProyecciones[i][0].toString();
-            var fecha = recogerProyecciones[i][1].toString();
-            var forecast = parseFloat(recogerProyecciones[i][3]).toFixed(6);
-            var pesimista = parseFloat(recogerProyecciones[i][4]).toFixed(6);
-            var optimista = parseFloat(recogerProyecciones[i][5]).toFixed(6);
-            var idGrupo = parseInt(recogerProyecciones[i][6]);
-            var idPrecio = null;
-            for (let j = 0; j < rows.length; j++) {
-                if (rows[j]) {
-                    let fechaBase = new Date(rows[j].fecha);
-                    let dia = fechaBase.getDate();
-                    let mes = fechaBase.getMonth()+1;
-                    let year = fechaBase.getFullYear();
-                    if (dia <= 9) {
-                        dia = `0${dia}`;
-                    }
-                    if (mes <= 9) {
-                        mes = `0${mes}`;
-                    }
-                    var fechaTransformada = `${year}-${mes}-${dia}`;
-                    if (fechaTransformada == fecha && rows[j].name == cripto) {
-                        idPrecio = rows[j].id;
-                        break;
-                    }
-                }
-            }
-            let newProyeccion = new Proyeccion(
+        for (let i = 0; i < recogerRentabilidadesLP.length; i++) {
+            var secuencial = recogerRentabilidadesLP[i][0];
+            var escenario = recogerRentabilidadesLP[i][1];
+            var cripto = recogerRentabilidadesLP[i][2];
+            var d30 = recogerRentabilidadesLP[i][3];
+            var m3 = recogerRentabilidadesLP[i][4];
+            var m6 = recogerRentabilidadesLP[i][5];
+            var a1 = recogerRentabilidadesLP[i][6];
+            var idGrupo = recogerRentabilidadesLP[i][7];
+            let newRentabilidadLP = new RentabilidadLP(
+                secuencial,
+                escenario,
                 cripto,
-                fecha,
-                idPrecio,
-                forecast,
-                pesimista,
-                optimista,
+                d30,
+                m3,
+                m6,
+                a1,
                 idGrupo
             );
-            newProyeccion.push(proyecciones);
+            newRentabilidadLP.push(rentabilidadeslp);
         }
 
-        await agregarDatos(proyecciones, process.env.TABLE_CRIPTO_PROY);
+        for (let i = 0; i < recogerRentabilidadesCP.length; i++) {
+            var secuencial = recogerRentabilidadesCP[i][0];
+            var escenario = recogerRentabilidadesCP[i][1];
+            var cripto = recogerRentabilidadesCP[i][2];
+            var d15 = recogerRentabilidadesCP[i][3];
+            var d30 = recogerRentabilidadesCP[i][4];
+            var d45 = recogerRentabilidadesCP[i][5];
+            var idGrupo = recogerRentabilidadesCP[i][6];
+            let newRentabilidadCP = new RentabilidadCP(
+                secuencial,
+                escenario,
+                cripto,
+                d15,
+                d30,
+                d45,
+                idGrupo
+            );
+            newRentabilidadCP.push(rentabilidadescp);
+        }
+        
+        await agregarDatos(rentabilidadeslp, process.env.TABLE_CRIPTO_RENT_LP);
+        await agregarDatos(rentabilidadescp, process.env.TABLE_CRIPTO_RENT_CP);
         await finalizarEjecucion();
     } catch (err) {
         console.error(err);

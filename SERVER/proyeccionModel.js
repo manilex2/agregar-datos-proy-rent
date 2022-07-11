@@ -1,4 +1,4 @@
-module.exports = class ProyeccionLPNoLineal {
+module.exports = class Proyeccion {
     constructor (
         cripto,
         fecha,
