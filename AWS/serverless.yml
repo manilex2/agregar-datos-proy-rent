@@ -65,7 +65,7 @@ functions:
     timeout: 300
     maximumRetryAttempts: 0
     environment:
-      ID_HOJA_PROY: ${env:HOJA_PROY_CP_NOLINEAL}
+      ID_HOJA_PROY: ${env:ID_HOJA_PROY_CP_NOLINEAL}
       TABLE_CRIPTO_PROY: ${env:TABLE_CRIPTO_PROY_CP_NOLINEAL}
       TABLE_PRECIO_ACTUAL: ${env:TABLE_PRECIO_ACTUAL}
     events:
@@ -79,7 +79,7 @@ functions:
     timeout: 300
     maximumRetryAttempts: 0
     environment:
-      ID_HOJA_PROY: ${env:HOJA_PROY_LP_NOLINEAL}
+      ID_HOJA_PROY: ${env:ID_HOJA_PROY_LP_NOLINEAL}
       TABLE_CRIPTO_PROY: ${env:TABLE_CRIPTO_PROY_LP_NOLINEAL}
       TABLE_PRECIO_ACTUAL: ${env:TABLE_PRECIO_ACTUAL}
     events:

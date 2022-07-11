@@ -120,7 +120,6 @@ exports.handler = async function (event) {
         };
         async function finalizarEjecucion() {
             conexion.end();
-            respuesta.send("OK");
         };
     });
     return promise;
